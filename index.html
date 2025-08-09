@@ -12,14 +12,20 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
-    <!-- Feather Icons for menu icons -->
+    <!-- Feather Icons -->
     <script src="https://unpkg.com/feather-icons"></script>
+    <!-- Animation Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.2/vanilla-tilt.min.js"></script>
+    
     <style>
         /* Custom styles for a more vibrant look */
         body {
             font-family: 'Lato', sans-serif;
             background-color: #fdfdff; 
             color: #333;
+            overflow-x: hidden; /* Prevent horizontal scrollbars */
         }
         h1, h2, h3, h4, h5, h6 {
             font-family: 'Poppins', sans-serif;
@@ -32,37 +38,60 @@
         .gradient-bg {
             background: linear-gradient(45deg, #8b5cf6, #3b82f6);
         }
+        #hero-section {
+            position: relative;
+            z-index: 1;
+        }
+        #vanta-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
 
-        /* Styles for the new floating menu */
+        /* Styles for the floating menu */
         .menu-link {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 56px; /* 14 * 4 */
-            height: 56px;
-            background-color: white;
-            color: #4f46e5;
-            border-radius: 9999px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            opacity: 0;
-            transform: translateY(20px) scale(0.9);
+            display: flex; align-items: center; justify-content: center;
+            width: 56px; height: 56px;
+            background-color: white; color: #4f46e5;
+            border-radius: 9999px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            opacity: 0; transform: translateY(20px) scale(0.9);
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            pointer-events: none; /* Not clickable when hidden */
+            pointer-events: none;
         }
-
         #menu-container.open .menu-link {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-            pointer-events: auto; /* Clickable when visible */
+            opacity: 1; transform: translateY(0) scale(1); pointer-events: auto;
         }
-
-        /* Stagger the animation for a nice fanning out effect */
         #menu-container.open .menu-link:nth-child(1) { transition-delay: 0.05s; }
         #menu-container.open .menu-link:nth-child(2) { transition-delay: 0.1s; }
         #menu-container.open .menu-link:nth-child(3) { transition-delay: 0.15s; }
         #menu-container.open .menu-link:nth-child(4) { transition-delay: 0.2s; }
         #menu-container.open .menu-link:nth-child(5) { transition-delay: 0.25s; }
         #menu-container.open .menu-link:nth-child(6) { transition-delay: 0.3s; }
+
+        /* Styles for Scroll Animations */
+        .scroll-animate {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .scroll-animate.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* Typing animation cursor */
+        .typing-cursor {
+            display: inline-block;
+            width: 3px;
+            height: 1em;
+            background-color: #4f46e5;
+            animation: blink 0.7s infinite;
+        }
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -70,12 +99,10 @@
     <!-- Floating Action Button Menu -->
     <div class="fixed top-6 right-6 z-50">
         <div id="menu-container" class="relative flex flex-col items-end">
-            <!-- Main Menu Toggle Button -->
             <button id="menu-toggle" class="w-16 h-16 gradient-bg text-white rounded-full shadow-lg flex items-center justify-center focus:outline-none transform transition-transform duration-300 hover:scale-110">
                 <i id="menu-icon-open" data-feather="menu" class="w-8 h-8"></i>
                 <i id="menu-icon-close" data-feather="x" class="w-8 h-8 hidden"></i>
             </button>
-            <!-- Floating Nav Links -->
             <div id="menu-links" class="mt-4 space-y-3 flex flex-col items-end">
                  <a href="#home" class="menu-link" title="Home"><i data-feather="home"></i></a>
                  <a href="#about" class="menu-link" title="About"><i data-feather="user"></i></a>
@@ -90,29 +117,29 @@
     <main class="container mx-auto px-6">
 
         <!-- Hero Section -->
-        <section id="home" class="text-center py-28">
-            <h1 class="text-5xl md:text-7xl font-bold mb-4">
-                <span class="gradient-text">Hello!</span>
-            </h1>
-            <p class="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">I'm Morampudi Surya Sai. A passionate front-end developer and AI/ML student dedicated to building beautiful and user-friendly web applications.</p>
-            <div class="mt-8 flex justify-center space-x-6">
-                 <!-- GitHub Icon -->
-                 <a href="https://github.com/your-username" target="_blank" rel="noopener noreferrer" class="text-gray-500 hover:text-indigo-600 transition duration-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
-                    <span class="sr-only">GitHub</span>
-                </a>
-                 <!-- LinkedIn Icon -->
-                 <a href="https://linkedin.com/in/your-username" target="_blank" rel="noopener noreferrer" class="text-gray-500 hover:text-indigo-600 transition duration-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
-                    <span class="sr-only">LinkedIn</span>
-                </a>
+        <section id="home" class="relative min-h-screen flex flex-col items-center justify-center text-center">
+            <div id="vanta-bg"></div>
+            <div class="scroll-animate">
+                <h1 class="text-5xl md:text-7xl font-bold mb-4 h-32 md:h-40">
+                    <span id="typing-text" class="gradient-text"></span><span class="typing-cursor"></span>
+                </h1>
+                <div class="mt-8 flex justify-center space-x-6">
+                     <a href="https://github.com/suryasai55" target="_blank" rel="noopener noreferrer" class="text-gray-500 hover:text-indigo-600 transition duration-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+                        <span class="sr-only">GitHub</span>
+                    </a>
+                     <a href="https://www.linkedin.com/in/surya-sai-560563288" target="_blank" rel="noopener noreferrer" class="text-gray-500 hover:text-indigo-600 transition duration-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+                        <span class="sr-only">LinkedIn</span>
+                    </a>
+                </div>
             </div>
         </section>
 
         <!-- About Me Section -->
-        <section id="about" class="py-20">
+        <section id="about" class="py-20 scroll-animate">
             <div class="grid md:grid-cols-2 gap-16 items-center">
-                <div class="flex justify-center">
+                <div class="flex justify-center" data-tilt>
                      <img src="./surya-photo.jpg" alt="Morampudi Surya Sai" class="rounded-full shadow-2xl w-80 h-80 object-cover">
                 </div>
                 <div class="text-lg text-gray-600 space-y-4">
@@ -124,9 +151,9 @@
         </section>
 
         <!-- Internship Experience Section -->
-        <section id="experience" class="py-20 bg-slate-100/50 rounded-lg">
+        <section id="experience" class="py-20 bg-slate-100/50 rounded-lg scroll-animate">
             <h2 class="text-4xl font-bold text-center mb-12">Internship Experience</h2>
-            <div class="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-lg border border-gray-100">
+            <div class="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-lg border border-gray-100" data-tilt>
                 <h3 class="text-2xl font-bold text-gray-800">Supraja Technologies</h3>
                 <p class="text-md text-gray-500 mb-4">Cybersecurity Intern | (Summer 2024)</p>
                 <p class="text-gray-600 mb-4">During my second-year internship, I had the opportunity to dive into the world of cybersecurity. I gained hands-on experience and developed key skills in protecting digital assets and infrastructure.</p>
@@ -141,51 +168,26 @@
         </section>
         
         <!-- Technologies Section -->
-        <section id="technologies" class="py-20">
+        <section id="technologies" class="py-20 scroll-animate">
             <div class="text-center">
                 <h2 class="text-4xl font-bold mb-2">My Tech Stack</h2>
                 <p class="text-lg text-gray-500 mb-12">The tools and technologies I use to build things.</p>
             </div>
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 text-center">
-                <!-- HTML5 -->
-                <div class="flex flex-col items-center justify-center p-4 bg-white rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                    <i class="devicon-html5-plain-wordmark colored text-7xl"></i>
-                    <p class="mt-2 font-semibold">HTML5</p>
-                </div>
-                <!-- CSS3 -->
-                <div class="flex flex-col items-center justify-center p-4 bg-white rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                    <i class="devicon-css3-plain-wordmark colored text-7xl"></i>
-                    <p class="mt-2 font-semibold">CSS3</p>
-                </div>
-                <!-- JavaScript -->
-                <div class="flex flex-col items-center justify-center p-4 bg-white rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                    <i class="devicon-javascript-plain colored text-7xl"></i>
-                    <p class="mt-2 font-semibold">JavaScript</p>
-                </div>
-                <!-- Python -->
-                <div class="flex flex-col items-center justify-center p-4 bg-white rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                    <i class="devicon-python-plain-wordmark colored text-7xl"></i>
-                    <p class="mt-2 font-semibold">Python</p>
-                </div>
-                <!-- C -->
-                <div class="flex flex-col items-center justify-center p-4 bg-white rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                    <i class="devicon-c-plain colored text-7xl"></i>
-                    <p class="mt-2 font-semibold">C</p>
-                </div>
-                <!-- SQL -->
-                <div class="flex flex-col items-center justify-center p-4 bg-white rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                    <i class="devicon-mysql-plain-wordmark colored text-7xl"></i>
-                    <p class="mt-2 font-semibold">SQL</p>
-                </div>
+                <div class="flex flex-col items-center justify-center p-4 bg-white rounded-lg shadow-md" data-tilt><i class="devicon-html5-plain-wordmark colored text-7xl"></i><p class="mt-2 font-semibold">HTML5</p></div>
+                <div class="flex flex-col items-center justify-center p-4 bg-white rounded-lg shadow-md" data-tilt><i class="devicon-css3-plain-wordmark colored text-7xl"></i><p class="mt-2 font-semibold">CSS3</p></div>
+                <div class="flex flex-col items-center justify-center p-4 bg-white rounded-lg shadow-md" data-tilt><i class="devicon-javascript-plain colored text-7xl"></i><p class="mt-2 font-semibold">JavaScript</p></div>
+                <div class="flex flex-col items-center justify-center p-4 bg-white rounded-lg shadow-md" data-tilt><i class="devicon-python-plain-wordmark colored text-7xl"></i><p class="mt-2 font-semibold">Python</p></div>
+                <div class="flex flex-col items-center justify-center p-4 bg-white rounded-lg shadow-md" data-tilt><i class="devicon-c-plain colored text-7xl"></i><p class="mt-2 font-semibold">C</p></div>
+                <div class="flex flex-col items-center justify-center p-4 bg-white rounded-lg shadow-md" data-tilt><i class="devicon-mysql-plain-wordmark colored text-7xl"></i><p class="mt-2 font-semibold">SQL</p></div>
             </div>
         </section>
 
         <!-- Projects Section -->
-        <section id="projects" class="py-20 bg-slate-100/50 rounded-lg">
+        <section id="projects" class="py-20 bg-slate-100/50 rounded-lg scroll-animate">
             <h2 class="text-4xl font-bold text-center mb-12">My Projects</h2>
             <div class="flex justify-center">
-                <!-- Project 1 -->
-                <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300 max-w-sm">
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden max-w-sm" data-tilt>
                     <div class="h-56 w-full gradient-bg flex items-center justify-center">
                         <h3 class="text-3xl font-bold text-white">Shadow-X</h3>
                     </div>
@@ -194,7 +196,7 @@
                         <p class="text-gray-600 mb-4">An image and audio steganography tool that uses the LSB technique to hide and decode secret messages within media files.</p>
                         <div class="flex space-x-4">
                             <a href="#" class="text-indigo-500 hover:underline font-semibold">View Live</a>
-                            <a href="https://github.com/your-username/shadow-x" target="_blank" class="text-indigo-500 hover:underline font-semibold">Source Code</a>
+                            <a href="https://github.com/suryasai55/shadow-x" target="_blank" class="text-indigo-500 hover:underline font-semibold">Source Code</a>
                         </div>
                     </div>
                 </div>
@@ -202,93 +204,51 @@
         </section>
 
         <!-- Contact Section -->
-        <section id="contact" class="py-20">
+        <section id="contact" class="py-20 scroll-animate">
             <div class="text-center">
                 <h2 class="text-4xl font-bold mb-4">Get In Touch</h2>
                 <p class="text-lg text-gray-600 max-w-2xl mx-auto mb-12">Have a project in mind or just want to connect? Feel free to send me a message. I'm always open to discussing new ideas and opportunities.</p>
             </div>
-
             <div class="max-w-4xl mx-auto bg-white p-8 sm:p-12 rounded-lg shadow-lg border border-gray-100 grid md:grid-cols-2 gap-12">
-                <!-- Contact Info -->
                 <div class="space-y-6 flex flex-col justify-center">
                     <div>
                         <h3 class="text-2xl font-bold text-gray-800 mb-4">Contact Information</h3>
                         <p class="text-gray-600">Fill up the form and I will get back to you within 24 hours.</p>
                     </div>
                     <div class="flex items-center space-x-4">
-                        <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center text-white flex-shrink-0">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                        </div>
-                        <div>
-                            <p class="font-semibold text-gray-700">Email Me</p>
-                            <a href="mailto:suryasai.m@example.com" class="text-indigo-600 hover:underline">suryasai.m@example.com</a>
-                        </div>
+                        <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center text-white flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg></div>
+                        <div><p class="font-semibold text-gray-700">Email Me</p><a href="mailto:suryasaiofficial@gmail.com" class="text-indigo-600 hover:underline">suryasaiofficial@gmail.com</a></div>
                     </div>
                      <div class="flex items-center space-x-4">
-                        <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center text-white flex-shrink-0">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
-                        </div>
-                        <div>
-                            <p class="font-semibold text-gray-700">GitHub</p>
-                            <a href="https://github.com/your-username" target="_blank" class="text-indigo-600 hover:underline">@your-username</a>
-                        </div>
+                        <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center text-white flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></div>
+                        <div><p class="font-semibold text-gray-700">GitHub</p><a href="https://github.com/suryasai55" target="_blank" class="text-indigo-600 hover:underline">@suryasai55</a></div>
                     </div>
                      <div class="flex items-center space-x-4">
-                        <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center text-white flex-shrink-0">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
-                        </div>
-                        <div>
-                            <p class="font-semibold text-gray-700">Instagram</p>
-                            <a href="https://instagram.com/your-username" target="_blank" class="text-indigo-600 hover:underline">@your-username</a>
-                        </div>
+                        <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center text-white flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg></div>
+                        <div><p class="font-semibold text-gray-700">Instagram</p><a href="https://instagram.com/suryasai22" target="_blank" class="text-indigo-600 hover:underline">@suryasai22</a></div>
                     </div>
                     <div class="flex items-center space-x-4">
-                        <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center text-white flex-shrink-0">
-                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
-                        </div>
-                        <div>
-                            <p class="font-semibold text-gray-700">LinkedIn</p>
-                            <a href="https://linkedin.com/in/your-username" target="_blank" class="text-indigo-600 hover:underline">@your-username</a>
-                        </div>
+                        <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center text-white flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg></div>
+                        <div><p class="font-semibold text-gray-700">LinkedIn</p><a href="https://www.linkedin.com/in/surya-sai-560563288" target="_blank" class="text-indigo-600 hover:underline">@surya-sai-560563288</a></div>
                     </div>
                     <div class="flex items-center space-x-4">
-                        <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center text-white flex-shrink-0">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-                        </div>
-                        <div>
-                            <p class="font-semibold text-gray-700">Location</p>
-                            <p class="text-gray-600">Vijayawada, Andhra Pradesh</p>
-                        </div>
+                        <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center text-white flex-shrink-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg></div>
+                        <div><p class="font-semibold text-gray-700">Location</p><p class="text-gray-600">Vijayawada, Andhra Pradesh</p></div>
                     </div>
                 </div>
-
                 <!-- Contact Form -->
-                <form>
-                    <!-- NOTE: This form needs a backend service like Formspree or Netlify Forms to work. -->
+                <form action="https://formspree.io/f/xovlyqog" method="POST">
                     <div class="space-y-6">
-                        <div>
-                            <label for="name" class="block text-gray-700 font-medium mb-2">Name</label>
-                            <input type="text" id="name" name="name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition" required>
-                        </div>
-                        <div>
-                            <label for="email" class="block text-gray-700 font-medium mb-2">Email</label>
-                            <input type="email" id="email" name="email" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition" required>
-                        </div>
-                        <div>
-                            <label for="message" class="block text-gray-700 font-medium mb-2">Message</label>
-                            <textarea id="message" name="message" rows="5" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition" required></textarea>
-                        </div>
-                        <div class="text-right">
-                            <button type="submit" class="gradient-bg text-white font-bold py-3 px-8 rounded-lg hover:shadow-xl transition duration-300">Send Message</button>
-                        </div>
+                        <div><label for="name" class="block text-gray-700 font-medium mb-2">Name</label><input type="text" id="name" name="name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition" required></div>
+                        <div><label for="email" class="block text-gray-700 font-medium mb-2">Email</label><input type="email" id="email" name="email" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition" required></div>
+                        <div><label for="message" class="block text-gray-700 font-medium mb-2">Message</label><textarea id="message" name="message" rows="5" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition" required></textarea></div>
+                        <div class="text-right"><button type="submit" class="gradient-bg text-white font-bold py-3 px-8 rounded-lg hover:shadow-xl transition duration-300">Send Message</button></div>
                     </div>
                 </form>
             </div>
         </section>
-
     </main>
 
-    <!-- Footer -->
     <footer class="bg-gray-800 text-white py-6">
         <div class="container mx-auto px-6 text-center">
             <p>&copy; 2025 Morampudi Surya Sai. All Rights Reserved.</p>
@@ -296,26 +256,53 @@
     </footer>
 
     <script>
-        // Initialize Feather Icons
-        feather.replace();
+        // --- VANTA.JS - Animated Background ---
+        VANTA.NET({
+            el: "#vanta-bg",
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            scale: 1.00,
+            scaleMobile: 1.00,
+            color: 0x6d28d9,
+            backgroundColor: 0xfdfdff
+        });
 
-        // JavaScript for floating action menu
+        // --- Intersection Observer - Scroll Animations ---
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+        const animatedElements = document.querySelectorAll('.scroll-animate');
+        animatedElements.forEach((el) => observer.observe(el));
+
+        // --- Vanilla-Tilt.js - 3D Tilt Effect ---
+        VanillaTilt.init(document.querySelectorAll("[data-tilt]"), {
+            max: 15,
+            speed: 400,
+            glare: true,
+            "max-glare": 0.2
+        });
+
+        // --- Feather Icons & Floating Menu ---
+        feather.replace();
         const menuToggle = document.getElementById('menu-toggle');
         const menuContainer = document.getElementById('menu-container');
         const menuIconOpen = document.getElementById('menu-icon-open');
         const menuIconClose = document.getElementById('menu-icon-close');
         const navLinks = document.querySelectorAll('.menu-link');
-
         menuToggle.addEventListener('click', () => {
             menuContainer.classList.toggle('open');
             menuIconOpen.classList.toggle('hidden');
             menuIconClose.classList.toggle('hidden');
         });
-
-        // Close the menu when a link is clicked
         navLinks.forEach(link => {
             link.addEventListener('click', () => {
-                // Using a timeout to ensure the scroll happens before the menu closes visually
                 setTimeout(() => {
                     if (menuContainer.classList.contains('open')) {
                         menuContainer.classList.remove('open');
@@ -325,7 +312,36 @@
                 }, 150);
             });
         });
-    </script>
 
+        // --- Typing Animation ---
+        const typingText = document.getElementById('typing-text');
+        const words = ["Welcome to", "Morampudi Surya Sai's", "Portfolio"];
+        let wordIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+
+        function type() {
+            const currentWord = words[wordIndex];
+            if (isDeleting) {
+                typingText.textContent = currentWord.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                typingText.textContent = currentWord.substring(0, charIndex + 1);
+                charIndex++;
+            }
+
+            if (!isDeleting && charIndex === currentWord.length) {
+                setTimeout(() => isDeleting = true, 2000);
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                wordIndex = (wordIndex + 1) % words.length;
+            }
+
+            const typingSpeed = isDeleting ? 100 : 150;
+            setTimeout(type, typingSpeed);
+        }
+
+        document.addEventListener('DOMContentLoaded', type);
+    </script>
 </body>
 </html>
