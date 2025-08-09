@@ -3,63 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Surya's Portfolio</title>
+    <title>Morampudi Surya Sai - Portfolio</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts: Inter -->
+    <!-- Devicon for technology icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.15.1/devicon.min.css">
+    <!-- Google Fonts: Poppins for headings, Lato for body -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Feather Icons for menu icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
     <style>
-        /* Custom styles for a clean look */
+        /* Custom styles for a more vibrant look */
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8fafc; /* A light gray background */
-            color: #1f2937; /* Dark gray text for better readability */
+            font-family: 'Lato', sans-serif;
+            background-color: #fdfdff; 
+            color: #333;
         }
-        /* Style for the active navigation link */
-        .nav-link-active {
-            color: #3b82f6; /* A vibrant blue for the active link */
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Poppins', sans-serif;
         }
+        .gradient-text {
+            background: -webkit-linear-gradient(45deg, #6d28d9, #4f46e5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .gradient-bg {
+            background: linear-gradient(45deg, #8b5cf6, #3b82f6);
+        }
+
+        /* Styles for the new floating menu */
+        .menu-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 56px; /* 14 * 4 */
+            height: 56px;
+            background-color: white;
+            color: #4f46e5;
+            border-radius: 9999px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            opacity: 0;
+            transform: translateY(20px) scale(0.9);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            pointer-events: none; /* Not clickable when hidden */
+        }
+
+        #menu-container.open .menu-link {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto; /* Clickable when visible */
+        }
+
+        /* Stagger the animation for a nice fanning out effect */
+        #menu-container.open .menu-link:nth-child(1) { transition-delay: 0.05s; }
+        #menu-container.open .menu-link:nth-child(2) { transition-delay: 0.1s; }
+        #menu-container.open .menu-link:nth-child(3) { transition-delay: 0.15s; }
+        #menu-container.open .menu-link:nth-child(4) { transition-delay: 0.2s; }
+        #menu-container.open .menu-link:nth-child(5) { transition-delay: 0.25s; }
+        #menu-container.open .menu-link:nth-child(6) { transition-delay: 0.3s; }
     </style>
 </head>
 <body class="antialiased">
 
-    <!-- Header & Navigation -->
-    <header class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
-        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="#" class="text-2xl font-bold text-gray-800">MyName</a>
-            <div class="hidden md:flex space-x-8 items-center">
-                <a href="#about" class="text-gray-600 hover:text-blue-500 transition duration-300">About</a>
-                <a href="#projects" class="text-gray-600 hover:text-blue-500 transition duration-300">Projects</a>
-                <a href="#contact" class="text-gray-600 hover:text-blue-500 transition duration-300">Contact</a>
-            </div>
-             <!-- Mobile Menu Button -->
-            <button id="mobile-menu-button" class="md:hidden text-gray-700 focus:outline-none">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+    <!-- Floating Action Button Menu -->
+    <div class="fixed top-6 right-6 z-50">
+        <div id="menu-container" class="relative flex flex-col items-end">
+            <!-- Main Menu Toggle Button -->
+            <button id="menu-toggle" class="w-16 h-16 gradient-bg text-white rounded-full shadow-lg flex items-center justify-center focus:outline-none transform transition-transform duration-300 hover:scale-110">
+                <i id="menu-icon-open" data-feather="menu" class="w-8 h-8"></i>
+                <i id="menu-icon-close" data-feather="x" class="w-8 h-8 hidden"></i>
             </button>
-        </nav>
-         <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
-            <a href="#about" class="block py-2 text-gray-600 hover:text-blue-500">About</a>
-            <a href="#projects" class="block py-2 text-gray-600 hover:text-blue-500">Projects</a>
-            <a href="#contact" class="block py-2 text-gray-600 hover:text-blue-500">Contact</a>
+            <!-- Floating Nav Links -->
+            <div id="menu-links" class="mt-4 space-y-3 flex flex-col items-end">
+                 <a href="#home" class="menu-link" title="Home"><i data-feather="home"></i></a>
+                 <a href="#about" class="menu-link" title="About"><i data-feather="user"></i></a>
+                 <a href="#experience" class="menu-link" title="Experience"><i data-feather="briefcase"></i></a>
+                 <a href="#technologies" class="menu-link" title="Technologies"><i data-feather="code"></i></a>
+                 <a href="#projects" class="menu-link" title="Projects"><i data-feather="layers"></i></a>
+                 <a href="#contact" class="menu-link" title="Contact"><i data-feather="mail"></i></a>
+            </div>
         </div>
-    </header>
+    </div>
 
-    <main class="container mx-auto px-6 py-12">
+    <main class="container mx-auto px-6">
 
         <!-- Hero Section -->
-        <section id="home" class="text-center py-20">
-            <img src="https://placehold.co/150x150/e2e8f0/334155?text=You" alt="Your Name" class="w-40 h-40 mx-auto rounded-full shadow-lg mb-6 border-4 border-white">
-            <h1 class="text-4xl md:text-6xl font-bold text-gray-800 mb-4">Hi, I'm [Your Name]</h1>
-            <p class="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">I'm a passionate [Your Profession/Title] creating beautiful and functional web experiences. Welcome to my personal corner of the internet.</p>
+        <section id="home" class="text-center py-28">
+            <h1 class="text-5xl md:text-7xl font-bold mb-4">
+                <span class="gradient-text">Hello!</span>
+            </h1>
+            <p class="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">I'm Morampudi Surya Sai. A passionate front-end developer and AI/ML student dedicated to building beautiful and user-friendly web applications.</p>
             <div class="mt-8 flex justify-center space-x-4">
-                <!-- Replace with your actual social media links -->
-                 <a href="#" class="text-gray-500 hover:text-blue-600 transition duration-300">
+                 <a href="#" class="text-gray-500 hover:text-indigo-600 transition duration-300">
                     <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.168 6.838 9.49.5.092.682-.217.682-.482 0-.237-.009-.868-.014-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.031-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.378.203 2.398.1 2.65.64.7 1.028 1.595 1.028 2.688 0 3.848-2.338 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.001 10.001 0 0022 12c0-5.523-4.477-10-10-10z" clip-rule="evenodd" /></svg>
                 </a>
-                 <a href="#" class="text-gray-500 hover:text-blue-600 transition duration-300">
+                 <a href="#" class="text-gray-500 hover:text-indigo-600 transition duration-300">
                     <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M22.23 0H1.77C.8 0 0 .77 0 1.72v20.56C0 23.23.8 24 1.77 24h20.46c.98 0 1.77-.77 1.77-1.72V1.72C24 .77 23.2 0 22.23 0zM7.06 20.45H3.53V9h3.53v11.45zM5.3 7.52c-1.2 0-2.17-1-2.17-2.22 0-1.23 1-2.22 2.17-2.22s2.17 1 2.17 2.22c0 1.22-.97 2.22-2.17 2.22zm13.37 12.93h-3.52V14.8c0-1.34-.02-3.07-1.87-3.07-1.87 0-2.16 1.46-2.16 2.97v5.75h-3.52V9h3.38v1.55h.05c.47-.9 1.62-1.82 3.33-1.82 3.56 0 4.22 2.34 4.22 5.38v6.34z"/></svg>
                 </a>
             </div>
@@ -67,91 +107,170 @@
 
         <!-- About Me Section -->
         <section id="about" class="py-20">
-            <h2 class="text-3xl font-bold text-center mb-12">About Me</h2>
-            <div class="grid md:grid-cols-2 gap-12 items-center">
-                <div class="text-lg text-gray-600 space-y-4">
-                    <p>Hello! I'm [Your Name], a developer based in [Your City]. I have a passion for building intuitive, dynamic user interfaces and solving complex problems.</p>
-                    <p>My journey into web development started back in [Year], and since then, I've been honing my skills in various technologies. I love the process of turning an idea into a tangible product that people can use and enjoy.</p>
-                    <p>Here are a few technologies I've been working with recently:</p>
-                    <ul class="list-disc list-inside space-y-2 pl-2">
-                        <li>JavaScript (ES6+)</li>
-                        <li>React & Next.js</li>
-                        <li>Node.js</li>
-                        <li>Tailwind CSS</li>
-                    </ul>
+            <div class="grid md:grid-cols-2 gap-16 items-center">
+                <div class="flex justify-center">
+                     <img src="https://placehold.co/400x400/8b5cf6/ffffff?text=Surya" alt="Morampudi Surya Sai" class="rounded-full shadow-2xl w-80 h-80 object-cover">
                 </div>
-                <div>
-                     <img src="https://placehold.co/600x400/e2e8f0/334155?text=Workspace" alt="About Me Image" class="rounded-lg shadow-xl w-full">
+                <div class="text-lg text-gray-600 space-y-4">
+                    <h2 class="text-4xl font-bold mb-4 text-gray-800">About Me</h2>
+                    <p>Hello! I'm Surya, a third-year B.Tech student from Vijayawada, Andhra Pradesh. As a front-end developer, I love bringing ideas to life in the browser.</p>
+                    <p>My journey combines the creative aspects of web development with the analytical challenges of AI and Machine Learning. I am always eager to learn new technologies and apply my knowledge to build interesting and useful applications.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Internship Experience Section -->
+        <section id="experience" class="py-20 bg-slate-100/50 rounded-lg">
+            <h2 class="text-4xl font-bold text-center mb-12">Internship Experience</h2>
+            <div class="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-lg border border-gray-100">
+                <h3 class="text-2xl font-bold text-gray-800">Supraja Technologies</h3>
+                <p class="text-md text-gray-500 mb-4">Cybersecurity Intern | (Summer 2024)</p>
+                <p class="text-gray-600 mb-4">During my second-year internship, I had the opportunity to dive into the world of cybersecurity. I gained hands-on experience and developed key skills in protecting digital assets and infrastructure.</p>
+                <h4 class="font-semibold text-gray-700 mb-2">Skills Acquired:</h4>
+                <ul class="list-disc list-inside text-gray-600 space-y-1">
+                    <li>Vulnerability Assessment & Penetration Testing (VAPT)</li>
+                    <li>Network Security Principles</li>
+                    <li>Security Information and Event Management (SIEM)</li>
+                    <li>Incident Response Procedures</li>
+                </ul>
+            </div>
+        </section>
+        
+        <!-- Technologies Section -->
+        <section id="technologies" class="py-20">
+            <div class="text-center">
+                <h2 class="text-4xl font-bold mb-2">My Tech Stack</h2>
+                <p class="text-lg text-gray-500 mb-12">The tools and technologies I use to build things.</p>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 text-center">
+                <!-- HTML5 -->
+                <div class="flex flex-col items-center justify-center p-4 bg-white rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                    <i class="devicon-html5-plain-wordmark colored text-7xl"></i>
+                    <p class="mt-2 font-semibold">HTML5</p>
+                </div>
+                <!-- CSS3 -->
+                <div class="flex flex-col items-center justify-center p-4 bg-white rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                    <i class="devicon-css3-plain-wordmark colored text-7xl"></i>
+                    <p class="mt-2 font-semibold">CSS3</p>
+                </div>
+                <!-- JavaScript -->
+                <div class="flex flex-col items-center justify-center p-4 bg-white rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                    <i class="devicon-javascript-plain colored text-7xl"></i>
+                    <p class="mt-2 font-semibold">JavaScript</p>
+                </div>
+                <!-- Python -->
+                <div class="flex flex-col items-center justify-center p-4 bg-white rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                    <i class="devicon-python-plain-wordmark colored text-7xl"></i>
+                    <p class="mt-2 font-semibold">Python</p>
+                </div>
+                <!-- C -->
+                <div class="flex flex-col items-center justify-center p-4 bg-white rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                    <i class="devicon-c-plain colored text-7xl"></i>
+                    <p class="mt-2 font-semibold">C</p>
+                </div>
+                <!-- SQL -->
+                <div class="flex flex-col items-center justify-center p-4 bg-white rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                    <i class="devicon-mysql-plain-wordmark colored text-7xl"></i>
+                    <p class="mt-2 font-semibold">SQL</p>
                 </div>
             </div>
         </section>
 
         <!-- Projects Section -->
-        <section id="projects" class="py-20 bg-slate-50 rounded-lg">
-            <h2 class="text-3xl font-bold text-center mb-12">My Projects</h2>
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <section id="projects" class="py-20 bg-slate-100/50 rounded-lg">
+            <h2 class="text-4xl font-bold text-center mb-12">My Projects</h2>
+            <div class="flex justify-center">
                 <!-- Project 1 -->
-                <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300">
-                    <img src="https://placehold.co/600x400/3b82f6/ffffff?text=Project+1" alt="Project 1" class="w-full h-56 object-cover">
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300 max-w-sm">
+                    <div class="h-56 w-full gradient-bg flex items-center justify-center">
+                        <h3 class="text-3xl font-bold text-white">Shadow-X</h3>
+                    </div>
                     <div class="p-6">
-                        <h3 class="text-xl font-bold mb-2">Project Title One</h3>
-                        <p class="text-gray-600 mb-4">A brief description of the project, its purpose, and the technologies used. Keep it concise and engaging.</p>
+                        <h3 class="text-xl font-bold mb-2">Shadow-X: Steganography Tool</h3>
+                        <p class="text-gray-600 mb-4">An image and audio steganography tool that uses the LSB technique to hide and decode secret messages within media files.</p>
                         <div class="flex space-x-4">
-                            <a href="#" class="text-blue-500 hover:underline">View Live</a>
-                            <a href="#" class="text-blue-500 hover:underline">Source Code</a>
+                            <a href="#" class="text-indigo-500 hover:underline font-semibold">View Live</a>
+                            <a href="https://github.com/your-username/shadow-x" target="_blank" class="text-indigo-500 hover:underline font-semibold">Source Code</a>
                         </div>
                     </div>
                 </div>
-                <!-- Project 2 -->
-                 <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300">
-                    <img src="https://placehold.co/600x400/10b981/ffffff?text=Project+2" alt="Project 2" class="w-full h-56 object-cover">
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold mb-2">Project Title Two</h3>
-                        <p class="text-gray-600 mb-4">A brief description of the project, its purpose, and the technologies used. Keep it concise and engaging.</p>
-                        <div class="flex space-x-4">
-                            <a href="#" class="text-blue-500 hover:underline">View Live</a>
-                            <a href="#" class="text-blue-500 hover:underline">Source Code</a>
-                        </div>
-                    </div>
-                </div>
-                <!-- Project 3 -->
-                <div class="bg-white rounded-lg shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300">
-                    <img src="https://placehold.co/600x400/8b5cf6/ffffff?text=Project+3" alt="Project 3" class="w-full h-56 object-cover">
-                    <div class="p-6">
-                        <h3 class="text-xl font-bold mb-2">Project Title Three</h3>
-                        <p class="text-gray-600 mb-4">A brief description of the project, its purpose, and the technologies used. Keep it concise and engaging.</p>
-                        <div class="flex space-x-4">
-                            <a href="#" class="text-blue-500 hover:underline">View Live</a>
-                            <a href="#" class="text-blue-500 hover:underline">Source Code</a>
-                        </div>
-                    </div>
-                </div>
-                 <!-- Add more projects as needed -->
             </div>
         </section>
 
         <!-- Contact Section -->
         <section id="contact" class="py-20">
-            <h2 class="text-3xl font-bold text-center mb-4">Get In Touch</h2>
-            <p class="text-lg text-gray-600 text-center max-w-xl mx-auto mb-12">I'm currently open to new opportunities. If you have a question or just want to say hi, feel free to reach out!</p>
-            <form class="max-w-xl mx-auto">
-                <!-- NOTE: This form needs a backend service like Formspree or Netlify Forms to work. -->
-                <div class="mb-4">
-                    <label for="name" class="block text-gray-700 font-medium mb-2">Name</label>
-                    <input type="text" id="name" name="name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            <div class="text-center">
+                <h2 class="text-4xl font-bold mb-4">Get In Touch</h2>
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto mb-12">Have a project in mind or just want to connect? Feel free to send me a message. I'm always open to discussing new ideas and opportunities.</p>
+            </div>
+
+            <div class="max-w-4xl mx-auto bg-white p-8 sm:p-12 rounded-lg shadow-lg border border-gray-100 grid md:grid-cols-2 gap-12">
+                <!-- Contact Info -->
+                <div class="space-y-6 flex flex-col justify-center">
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4">Contact Information</h3>
+                        <p class="text-gray-600">Fill up the form and I will get back to you within 24 hours.</p>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center text-white flex-shrink-0">
+                            <i data-feather="mail" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-gray-700">Email Me</p>
+                            <a href="mailto:suryasai.m@example.com" class="text-indigo-600 hover:underline">suryasai.m@example.com</a>
+                        </div>
+                    </div>
+                     <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center text-white flex-shrink-0">
+                            <i data-feather="github" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-gray-700">GitHub</p>
+                            <a href="https://github.com/your-username" target="_blank" class="text-indigo-600 hover:underline">@your-username</a>
+                        </div>
+                    </div>
+                     <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center text-white flex-shrink-0">
+                            <i data-feather="instagram" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-gray-700">Instagram</p>
+                            <a href="https://instagram.com/your-username" target="_blank" class="text-indigo-600 hover:underline">@your-username</a>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 gradient-bg rounded-full flex items-center justify-center text-white flex-shrink-0">
+                            <i data-feather="map-pin" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-gray-700">Location</p>
+                            <p class="text-gray-600">Vijayawada, Andhra Pradesh</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="mb-4">
-                    <label for="email" class="block text-gray-700 font-medium mb-2">Email</label>
-                    <input type="email" id="email" name="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                </div>
-                <div class="mb-4">
-                    <label for="message" class="block text-gray-700 font-medium mb-2">Message</label>
-                    <textarea id="message" name="message" rows="5" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
-                </div>
-                <div class="text-center">
-                    <button type="submit" class="bg-blue-500 text-white font-bold py-3 px-8 rounded-lg hover:bg-blue-600 transition duration-300">Send Message</button>
-                </div>
-            </form>
+
+                <!-- Contact Form -->
+                <form>
+                    <!-- NOTE: This form needs a backend service like Formspree or Netlify Forms to work. -->
+                    <div class="space-y-6">
+                        <div>
+                            <label for="name" class="block text-gray-700 font-medium mb-2">Name</label>
+                            <input type="text" id="name" name="name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition" required>
+                        </div>
+                        <div>
+                            <label for="email" class="block text-gray-700 font-medium mb-2">Email</label>
+                            <input type="email" id="email" name="email" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition" required>
+                        </div>
+                        <div>
+                            <label for="message" class="block text-gray-700 font-medium mb-2">Message</label>
+                            <textarea id="message" name="message" rows="5" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition" required></textarea>
+                        </div>
+                        <div class="text-right">
+                            <button type="submit" class="gradient-bg text-white font-bold py-3 px-8 rounded-lg hover:shadow-xl transition duration-300">Send Message</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </section>
 
     </main>
@@ -159,24 +278,38 @@
     <!-- Footer -->
     <footer class="bg-gray-800 text-white py-6">
         <div class="container mx-auto px-6 text-center">
-            <p>&copy; 2024 [Your Name]. All Rights Reserved.</p>
+            <p>&copy; 2025 Morampudi Surya Sai. All Rights Reserved.</p>
         </div>
     </footer>
 
     <script>
-        // JavaScript for mobile menu toggle
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const mobileMenu = document.getElementById('mobile-menu');
+        // Initialize Feather Icons
+        feather.replace();
 
-        mobileMenuButton.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
+        // JavaScript for floating action menu
+        const menuToggle = document.getElementById('menu-toggle');
+        const menuContainer = document.getElementById('menu-container');
+        const menuIconOpen = document.getElementById('menu-icon-open');
+        const menuIconClose = document.getElementById('menu-icon-close');
+        const navLinks = document.querySelectorAll('.menu-link');
+
+        menuToggle.addEventListener('click', () => {
+            menuContainer.classList.toggle('open');
+            menuIconOpen.classList.toggle('hidden');
+            menuIconClose.classList.toggle('hidden');
         });
 
-        // Close mobile menu when a link is clicked
-        const navLinks = document.querySelectorAll('#mobile-menu a');
+        // Close the menu when a link is clicked
         navLinks.forEach(link => {
             link.addEventListener('click', () => {
-                mobileMenu.classList.add('hidden');
+                // Using a timeout to ensure the scroll happens before the menu closes visually
+                setTimeout(() => {
+                    if (menuContainer.classList.contains('open')) {
+                        menuContainer.classList.remove('open');
+                        menuIconOpen.classList.remove('hidden');
+                        menuIconClose.classList.add('hidden');
+                    }
+                }, 150);
             });
         });
     </script>
