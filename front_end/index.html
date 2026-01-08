@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Morampudi Surya Sai - Portfolio</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        glass: 'rgba(255, 255, 255, 0.7)',
+                        glassDark: 'rgba(15, 23, 42, 0.8)',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Devicon for technology icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.15.1/devicon.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Feather Icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+    <!-- Animation Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+    
+    <style>
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: #fdfdff; 
+            color: #333;
+            overflow-x: hidden;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Poppins', sans-serif;
+        }
+        .gradient-text {
+            background: -webkit-linear-gradient(45deg, #6d28d9, #4f46e5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .gradient-bg {
+            background: linear-gradient(45deg, #8b5cf6, #3b82f6);
+        }
+        #vanta-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        /* Glassmorphism Classes */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: box-shadow 0.4s ease, border-color 0.4s ease;
+        }
+        .dark .glass-card {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Elevation Only via Shadows */
+        .elevation-low {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .elevation-high {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .hover-elevation:hover {
+            box-shadow: 0 25px 50px -12px rgba(79, 70, 229, 0.25);
+            border-color: rgba(79, 70, 229, 0.4);
+        }
+        .dark .hover-elevation:hover {
+            box-shadow: 0 0 40px 5px rgba(139, 92, 246, 0.15);
+        }
+
+        /* Fixed Navigation Styles */
+        .menu-link {
+            display: flex; align-items: center; justify-content: center;
+            width: 56px; height: 56px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #4f46e5;
+            border-radius: 9999px;
+            opacity: 0;
+            transition: opacity 0.3s ease, box-shadow 0.3s ease;
+            pointer-events: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        #menu-container.open .menu-link {
+            opacity: 1; pointer-events: auto;
+        }
+
+        /* Scroll Animation (Fade Only) */
+        .scroll-animate {
+            opacity: 0;
+            transition: opacity 1s ease-out;
+        }
+        .scroll-animate.visible {
+            opacity: 1;
+        }
+
+        /* Typing cursor */
+        .typing-cursor {
+            display: inline-block;
+            width: 3px;
+            height: 1em;
+            background-color: #4f46e5;
+            animation: blink 0.7s infinite;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+        
+        /* Message Box */
+        #form-feedback {
+            display: none;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body class="antialiased dark:bg-slate-900 dark:text-gray-100">
+
+    <!-- Floating Action Button Menu -->
+    <div class="fixed top-6 right-6 z-50">
+        <div id="menu-container" class="relative flex flex-col items-end">
+            <button id="menu-toggle" class="w-16 h-16 gradient-bg text-white rounded-full shadow-lg flex items-center justify-center focus:outline-none transition-shadow duration-300 hover:shadow-2xl active:shadow-inner">
+                <i id="menu-icon-open" data-feather="menu" class="w-8 h-8"></i>
+                <i id="menu-icon-close" data-feather="x" class="w-8 h-8 hidden"></i>
+            </button>
+            <div id="menu-links" class="mt-4 space-y-3 flex flex-col items-end">
+                 <a href="#home" class="menu-link hover:shadow-xl" title="Home"><i data-feather="home"></i></a>
+                 <a href="#about" class="menu-link hover:shadow-xl" title="About"><i data-feather="user"></i></a>
+                 <a href="#experience" class="menu-link hover:shadow-xl" title="Experience"><i data-feather="briefcase"></i></a>
+                 <a href="#technologies" class="menu-link hover:shadow-xl" title="Technologies"><i data-feather="code"></i></a>
+                 <a href="#projects" class="menu-link hover:shadow-xl" title="Projects"><i data-feather="layers"></i></a>
+                 <a href="#contact" class="menu-link hover:shadow-xl" title="Contact"><i data-feather="mail"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <main class="container mx-auto px-6">
+
+        <!-- Hero Section -->
+        <section id="home" class="relative min-h-screen flex flex-col items-center justify-center text-center">
+            <div id="vanta-bg"></div>
+            <div class="scroll-animate">
+                <h1 class="text-5xl md:text-7xl font-bold mb-4 h-32 md:h-40">
+                    <span id="typing-text" class="gradient-text"></span><span class="typing-cursor"></span>
+                </h1>
+                <div class="mt-8 flex justify-center space-x-6">
+                    <a href="https://github.com/suryasai55" target="_blank" class="text-gray-500 hover:text-indigo-600 transition duration-300">
+                        <i data-feather="github" class="w-8 h-8"></i>
+                    </a>
+                    <a href="https://www.linkedin.com/in/morampudi-surya-sai-560563288/" target="_blank" class="text-gray-500 hover:text-indigo-600 transition duration-300">
+                        <i data-feather="linkedin" class="w-8 h-8"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Me Section -->
+        <section id="about" class="py-20 scroll-animate">
+            <div class="grid md:grid-cols-2 gap-16 items-center">
+                <div class="flex justify-center">
+                     <div class="relative p-2 rounded-full glass-card elevation-high">
+                        <img src="./surya-photo.jpg" alt="Morampudi Surya Sai" class="rounded-full w-80 h-80 object-cover" onerror="this.src='https://ui-avatars.com/api/?name=Surya+Sai&background=6d28d9&color=fff&size=512'">
+                     </div>
+                </div>
+                <div class="text-lg text-gray-600 dark:text-gray-400 space-y-4">
+                    <h2 class="text-4xl font-bold mb-4 text-gray-800 dark:text-white">About Me</h2>
+                    <p>Hello! I'm Surya, a third-year B.Tech student from Vijayawada, Andhra Pradesh. As a front-end developer, I love bringing ideas to life in the browser.</p>
+                    <p>My journey combines the creative aspects of web development with the analytical challenges of AI and Machine Learning. I am always eager to learn new technologies and apply my knowledge to build interesting and useful applications.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Internship Experience Section -->
+        <section id="experience" class="py-20 scroll-animate">
+            <h2 class="text-4xl font-bold text-center mb-12 text-gray-800 dark:text-white">Internship Experience</h2>
+            <div class="max-w-2xl mx-auto glass-card p-8 rounded-2xl elevation-low hover-elevation">
+                <h3 class="text-2xl font-bold text-gray-800 dark:text-white">Supraja Technologies</h3>
+                <p class="text-md text-indigo-600 font-semibold mb-4">Cybersecurity Intern | (Summer 2025)</p>
+                <p class="text-gray-600 dark:text-gray-400 mb-4">During my second-year internship, I had the opportunity to dive into the world of cybersecurity. I gained hands-on experience and developed key skills in protecting digital assets and infrastructure.</p>
+                <h4 class="font-semibold text-gray-700 dark:text-gray-200 mb-2">Skills Acquired:</h4>
+                <ul class="list-disc list-inside text-gray-600 dark:text-gray-400 space-y-1">
+                    <li>Vulnerability Assessment & Penetration Testing (VAPT)</li>
+                    <li>Network Security Principles</li>
+                    <li>Security Information and Event Management (SIEM)</li>
+                    <li>Incident Response Procedures</li>
+                </ul>
+            </div>
+        </section>
+        
+        <!-- Technologies Section -->
+        <section id="technologies" class="py-20 scroll-animate">
+            <div class="text-center">
+                <h2 class="text-4xl font-bold mb-2 text-gray-800 dark:text-white">My Tech Stack</h2>
+                <p class="text-lg text-gray-500 mb-12">The tools and technologies I use to build things.</p>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 text-center max-w-5xl mx-auto">
+                <div class="flex flex-col items-center justify-center p-6 glass-card rounded-2xl elevation-low hover-elevation">
+                    <i class="devicon-c-plain colored text-6xl"></i>
+                    <p class="mt-4 font-semibold">C</p>
+                </div>
+                <div class="flex flex-col items-center justify-center p-6 glass-card rounded-2xl elevation-low hover-elevation">
+                    <i class="devicon-python-plain colored text-6xl"></i>
+                    <p class="mt-4 font-semibold">Python</p>
+                </div>
+                <div class="flex flex-col items-center justify-center p-6 glass-card rounded-2xl elevation-low hover-elevation">
+                    <i class="devicon-java-plain colored text-6xl"></i>
+                    <p class="mt-4 font-semibold">Java</p>
+                </div>
+                <div class="flex flex-col items-center justify-center p-6 glass-card rounded-2xl elevation-low hover-elevation">
+                    <i class="devicon-r-original colored text-6xl"></i>
+                    <p class="mt-4 font-semibold">R</p>
+                </div>
+                <div class="flex flex-col items-center justify-center p-6 glass-card rounded-2xl elevation-low hover-elevation">
+                    <i class="devicon-mysql-plain colored text-6xl"></i>
+                    <p class="mt-4 font-semibold">MySQL</p>
+                </div>
+                <div class="flex flex-col items-center justify-center p-6 glass-card rounded-2xl elevation-low hover-elevation">
+                    <i class="devicon-mongodb-plain colored text-6xl"></i>
+                    <p class="mt-4 font-semibold">MongoDB</p>
+                </div>
+                <div class="flex flex-col items-center justify-center p-6 glass-card rounded-2xl elevation-low hover-elevation">
+                    <i class="devicon-git-plain colored text-6xl"></i>
+                    <p class="mt-4 font-semibold">Git</p>
+                </div>
+                <div class="flex flex-col items-center justify-center p-6 glass-card rounded-2xl elevation-low hover-elevation">
+                    <i class="devicon-linux-plain text-6xl dark:text-white"></i>
+                    <p class="mt-4 font-semibold">Linux</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="py-24 scroll-animate">
+            <div class="max-w-6xl mx-auto px-6 text-center">
+                <h2 class="text-4xl font-bold text-gray-900 dark:text-white">My Projects</h2>
+                <p class="mt-3 text-gray-600 dark:text-gray-400">Innovative solutions built with modern technology</p>
+
+                <div class="mt-12 grid gap-10 md:grid-cols-3">
+                    
+                    <!-- Project Card: Shadow-X -->
+                    <div class="glass-card rounded-3xl overflow-hidden elevation-low hover-elevation text-left flex flex-col h-full">
+                        <div class="h-48 gradient-bg flex items-center justify-center relative overflow-hidden">
+                            <div class="absolute inset-0 opacity-20 pointer-events-none" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 20px 20px;"></div>
+                            <i data-feather="shield" class="w-16 h-16 text-white/90"></i>
+                        </div>
+                        <div class="p-6 flex flex-col flex-grow">
+                            <h3 class="text-xl font-bold dark:text-white mb-2">Shadow-X</h3>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm mb-6 flex-grow">
+                                An advanced steganography tool that allows users to hide sensitive data and encrypted messages within standard image files.
+                            </p>
+                            <div class="flex gap-3">
+                                <a href="#" class="flex-1 text-center py-2 px-4 rounded-xl glass-card text-sm font-bold text-indigo-600 dark:text-indigo-400 hover:border-indigo-500/50 transition-colors">
+                                    <i data-feather="external-link" class="inline w-4 h-4 mr-1"></i> Live
+                                </a>
+                                <a href="https://github.com/suryasai55/SHADOW-X" target="_blank" class="flex-1 text-center py-2 px-4 rounded-xl glass-card text-sm font-bold text-gray-700 dark:text-gray-300 hover:border-gray-500/50 transition-colors">
+                                    <i data-feather="github" class="inline w-4 h-4 mr-1"></i> Code
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Project Card: Netra -->
+                    <div class="glass-card rounded-3xl overflow-hidden elevation-low hover-elevation text-left flex flex-col h-full">
+                        <div class="h-48 bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center relative overflow-hidden">
+                            <div class="absolute inset-0 opacity-20 pointer-events-none" style="background-image: repeating-linear-gradient(45deg, white, white 1px, transparent 1px, transparent 10px);"></div>
+                            <i data-feather="eye" class="w-16 h-16 text-white/90"></i>
+                        </div>
+                        <div class="p-6 flex flex-col flex-grow">
+                            <h3 class="text-xl font-bold dark:text-white mb-2">Netra</h3>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm mb-6 flex-grow">
+                                Real-time AI surveillance system optimized for identifying suspicious activities and enhancing safety in public environments.
+                            </p>
+                            <div class="flex gap-3">
+                                <a href="https://suryasai55.github.io/netra/" target="_blank" class="flex-1 text-center py-2 px-4 rounded-xl glass-card text-sm font-bold text-indigo-600 dark:text-indigo-400 hover:border-indigo-500/50 transition-colors">
+                                    <i data-feather="external-link" class="inline w-4 h-4 mr-1"></i> Live
+                                </a>
+                                <a href="https://github.com/suryasai55/netra" target="_blank" class="flex-1 text-center py-2 px-4 rounded-xl glass-card text-sm font-bold text-gray-700 dark:text-gray-300 hover:border-gray-500/50 transition-colors">
+                                    <i data-feather="github" class="inline w-4 h-4 mr-1"></i> Code
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Project Card: Road Accidents -->
+                    <div class="glass-card rounded-3xl overflow-hidden elevation-low hover-elevation text-left flex flex-col h-full">
+                        <div class="h-48 bg-gradient-to-br from-pink-500 to-rose-600 flex items-center justify-center relative overflow-hidden">
+                            <div class="absolute inset-0 opacity-20 pointer-events-none" style="background-image: radial-gradient(white 1px, transparent 0); background-size: 15px 15px;"></div>
+                            <i data-feather="alert-triangle" class="w-16 h-16 text-white/90"></i>
+                        </div>
+                        <div class="p-6 flex flex-col flex-grow">
+                            <h3 class="text-xl font-bold dark:text-white mb-2">Road Accidents</h3>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm mb-6 flex-grow">
+                                Smart detection system for road hazards like potholes and water logging, utilizing image analysis to improve infrastructure reporting.
+                            </p>
+                            <div class="flex gap-3">
+                                <a href="#" class="flex-1 text-center py-2 px-4 rounded-xl glass-card text-sm font-bold text-indigo-600 dark:text-indigo-400 hover:border-indigo-500/50 transition-colors">
+                                    <i data-feather="external-link" class="inline w-4 h-4 mr-1"></i> Live
+                                </a>
+                                <a href="https://github.com/suryasai55/RoadAccidents" target="_blank" class="flex-1 text-center py-2 px-4 rounded-xl glass-card text-sm font-bold text-gray-700 dark:text-gray-300 hover:border-gray-500/50 transition-colors">
+                                    <i data-feather="github" class="inline w-4 h-4 mr-1"></i> Code
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Contact Section -->
+        <section id="contact" class="py-20 scroll-animate">
+            <div class="text-center">
+                <h2 class="text-4xl font-bold mb-4 text-gray-800 dark:text-white">Get In Touch</h2>
+                <p class="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-12">Have a project in mind or just want to connect? Feel free to send me a message.</p>
+            </div>
+            <div class="max-w-5xl mx-auto glass-card p-8 sm:p-12 rounded-3xl elevation-low grid md:grid-cols-2 gap-12 border border-white/40">
+                <div class="space-y-6 flex flex-col justify-center">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 gradient-bg rounded-xl flex items-center justify-center text-white flex-shrink-0 shadow-lg">
+                            <i data-feather="mail"></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-gray-700 dark:text-gray-200">Email Me</p>
+                            <a href="mailto:suryasaiofficial@gmail.com" class="text-indigo-600 dark:text-indigo-400 hover:underline">suryasaiofficial@gmail.com</a>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 gradient-bg rounded-xl flex items-center justify-center text-white flex-shrink-0 shadow-lg">
+                            <i data-feather="github"></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-gray-700 dark:text-gray-200">GitHub</p>
+                            <a href="https://github.com/suryasai55" target="_blank" class="text-indigo-600 dark:text-indigo-400 hover:underline">@suryasai55</a>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 gradient-bg rounded-xl flex items-center justify-center text-white flex-shrink-0 shadow-lg">
+                            <i data-feather="instagram"></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-gray-700 dark:text-gray-200">Instagram</p>
+                            <a href="https://instagram.com/suryasai22" target="_blank" class="text-indigo-600 dark:text-indigo-400 hover:underline">@suryasai22</a>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 gradient-bg rounded-xl flex items-center justify-center text-white flex-shrink-0 shadow-lg">
+                            <i data-feather="linkedin"></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-gray-700 dark:text-gray-200">LinkedIn</p>
+                            <a href="https://www.linkedin.com/in/morampudi-surya-sai-560563288/" target="_blank" class="text-indigo-600 dark:text-indigo-400 hover:underline">@morampudi-surya-sai</a>
+                        </div>
+                    </div>
+                     <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 gradient-bg rounded-xl flex items-center justify-center text-white flex-shrink-0 shadow-lg">
+                            <i data-feather="map-pin"></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-gray-700 dark:text-gray-200">Location</p>
+                            <p class="text-gray-600 dark:text-gray-400">Vijayawada, Andhra Pradesh</p>
+                        </div>
+                    </div>
+                </div>
+
+                <form id="contactForm">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-gray-700 dark:text-gray-300 font-medium mb-1 text-sm">Name</label>
+                            <input type="text" id="name" required class="w-full px-4 py-2 border rounded-xl bg-white/50 dark:bg-slate-800/50 dark:border-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 dark:text-gray-300 font-medium mb-1 text-sm">Email</label>
+                            <input type="email" id="email" required class="w-full px-4 py-2 border rounded-xl bg-white/50 dark:bg-slate-800/50 dark:border-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 dark:text-gray-300 font-medium mb-1 text-sm">Message</label>
+                            <textarea id="message" rows="4" required class="w-full px-4 py-2 border rounded-xl bg-white/50 dark:bg-slate-800/50 dark:border-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none transition-all"></textarea>
+                        </div>
+                        <button type="submit" class="w-full gradient-bg text-white font-bold py-3 rounded-xl shadow-lg hover:shadow-indigo-500/40 transition-shadow">
+                            Send Message
+                        </button>
+                    </div>
+                    <div id="form-feedback"></div>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer class="py-10 text-center text-gray-500 text-sm">
+        <p>&copy; 2024 Morampudi Surya Sai. Built with Glassmorphism & Elevation.</p>
+    </footer>
+
+    <script>
+        // --- VANTA.JS ---
+        VANTA.NET({
+            el: "#vanta-bg",
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            scale: 1.00,
+            scaleMobile: 1.00,
+            color: 0x6d28d9,
+            backgroundColor: 0xfdfdff
+        });
+
+        // --- Intersection Observer ---
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+        const animatedElements = document.querySelectorAll('.scroll-animate');
+        animatedElements.forEach((el) => observer.observe(el));
+
+        // --- Feather Icons & Floating Menu ---
+        feather.replace();
+        const menuToggle = document.getElementById('menu-toggle');
+        const menuContainer = document.getElementById('menu-container');
+        const menuIconOpen = document.getElementById('menu-icon-open');
+        const menuIconClose = document.getElementById('menu-icon-close');
+        const navLinks = document.querySelectorAll('.menu-link');
+
+        menuToggle.addEventListener('click', () => {
+            menuContainer.classList.toggle('open');
+            menuIconOpen.classList.toggle('hidden');
+            menuIconClose.classList.toggle('hidden');
+        });
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                setTimeout(() => {
+                    if (menuContainer.classList.contains('open')) {
+                        menuContainer.classList.remove('open');
+                        menuIconOpen.classList.remove('hidden');
+                        menuIconClose.classList.add('hidden');
+                    }
+                }, 150);
+            });
+        });
+
+        // --- Typing Animation ---
+        const typingText = document.getElementById('typing-text');
+        const words = ["Welcome to", "Morampudi Surya Sai's", "Portfolio"];
+        let wordIndex = 0; let charIndex = 0; let isDeleting = false;
+
+        function type() {
+            const currentWord = words[wordIndex];
+            if (isDeleting) {
+                typingText.textContent = currentWord.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                typingText.textContent = currentWord.substring(0, charIndex + 1);
+                charIndex++;
+            }
+            if (!isDeleting && charIndex === currentWord.length) {
+                setTimeout(() => isDeleting = true, 1000);
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                wordIndex = (wordIndex + 1) % words.length;
+            }
+            const typingSpeed = isDeleting ? 100 : 150;
+            setTimeout(type, typingSpeed);
+        }
+
+        // --- ORIGINAL BACKEND LOGIC ---
+        document.addEventListener("DOMContentLoaded", () => {
+            const form = document.getElementById("contactForm");
+            const feedback = document.getElementById("form-feedback");
+            form.addEventListener("submit", async (e) => {
+                e.preventDefault();
+                feedback.style.display = "block";
+                feedback.textContent = "Sending...";
+                feedback.className = "mt-4 p-3 rounded-lg bg-gray-100 text-gray-700 dark:bg-slate-800 dark:text-gray-300";
+                const data = {
+                    name: document.getElementById("name").value,
+                    email: document.getElementById("email").value,
+                    message: document.getElementById("message").value
+                };
+                try {
+                    const res = await fetch("/api/contact", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(data)
+                    });
+                    const result = await res.json();
+                    feedback.textContent = "✅ Message sent";
+                    feedback.className = "mt-4 p-3 rounded-lg bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400";
+                    form.reset();
+                } catch (err) {
+                    feedback.textContent = "❌ Error sending message";
+                    feedback.className = "mt-4 p-3 rounded-lg bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400";
+                }
+            });
+            type();
+        });
+    </script>
+</body>
+</html>
