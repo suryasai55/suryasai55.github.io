@@ -1,5 +1,5 @@
 const express = require("express");
-const Contact = require("../models/Contact");
+const Contact = require("../models/contact");
 const nodemailer = require("nodemailer");
 
 const router = express.Router();
