@@ -93,6 +93,40 @@
     }
 
     /* ═══════════════════════════════════════════════════════
+       FIXED PHOTO CONTINUATION — faint hero photo beneath
+       all sections so the page feels like one environment
+    ═══════════════════════════════════════════════════════ */
+    .photo-continuation {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background: url('surya-bg.png') center top / cover no-repeat;
+      opacity: 0;
+      transition: opacity 1s ease;
+      pointer-events: none;
+      /* Heavily dim — just a ghostly presence */
+      filter: brightness(0.18) saturate(0.5) blur(2px);
+    }
+    body.past-hero .photo-continuation { opacity: 1; }
+
+    /* Per-section ambient color wash — sits above photo, below content */
+    .section-atmosphere {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 1.2s ease;
+    }
+    /* Each section pumps in its own radial wash via JS class on body */
+    body.atm-about    .section-atmosphere { opacity: 1; background: radial-gradient(ellipse 70% 60% at 15% 50%, rgba(200,169,110,0.09) 0%, transparent 70%), radial-gradient(ellipse 50% 50% at 85% 80%, rgba(200,140,80,0.06) 0%, transparent 70%); }
+    body.atm-skills   .section-atmosphere { opacity: 1; background: radial-gradient(ellipse 60% 60% at 80% 30%, rgba(79,200,200,0.09) 0%, transparent 65%), radial-gradient(ellipse 40% 50% at 10% 70%, rgba(60,180,180,0.05) 0%, transparent 60%); }
+    body.atm-experience .section-atmosphere { opacity: 1; background: radial-gradient(ellipse 65% 55% at 20% 40%, rgba(200,169,110,0.08) 0%, transparent 65%), radial-gradient(ellipse 45% 50% at 80% 70%, rgba(79,200,200,0.05) 0%, transparent 60%); }
+    body.atm-projects .section-atmosphere { opacity: 1; background: radial-gradient(ellipse 60% 60% at 75% 25%, rgba(79,200,200,0.10) 0%, transparent 65%), radial-gradient(ellipse 40% 40% at 20% 80%, rgba(200,169,110,0.06) 0%, transparent 60%); }
+    body.atm-achievements .section-atmosphere { opacity: 1; background: radial-gradient(ellipse 70% 60% at 50% 20%, rgba(200,169,110,0.10) 0%, transparent 70%), radial-gradient(ellipse 40% 50% at 80% 80%, rgba(200,169,110,0.05) 0%, transparent 60%); }
+    body.atm-contact  .section-atmosphere { opacity: 1; background: radial-gradient(ellipse 55% 60% at 25% 60%, rgba(79,200,200,0.09) 0%, transparent 65%), radial-gradient(ellipse 50% 50% at 80% 30%, rgba(200,169,110,0.07) 0%, transparent 60%); }
+
+    /* ═══════════════════════════════════════════════════════
        HERO — full-viewport photo background
     ═══════════════════════════════════════════════════════ */
     #hero {
@@ -987,6 +1021,10 @@
 
   <!-- Deep space base (for all sections below hero) -->
   <div class="space-bg" aria-hidden="true"></div>
+  <!-- Ghostly photo continuation — same image as hero, very dim, fixed -->
+  <div class="photo-continuation" aria-hidden="true"></div>
+  <!-- Per-section ambient color atmosphere -->
+  <div class="section-atmosphere" aria-hidden="true"></div>
   <canvas id="star-canvas" aria-hidden="true"></canvas>
   <div class="orb orb-1" aria-hidden="true"></div>
   <div class="orb orb-2" aria-hidden="true"></div>
@@ -1103,7 +1141,7 @@
           "Not just a student —<br><span class="italic">a builder navigating the frontier."</span>
         </blockquote>
         <p class="about-body">
-          From Vijayawada, Andhra Pradesh, I'm a Final year engineering student at Andhra Loyola
+          From Vijayawada, Andhra Pradesh, I'm a second-year engineering student at Andhra Loyola
           Institute pursuing CSE with a specialization in AI & ML. My journey started with curiosity
           about how machines learn, evolved into a passion for cybersecurity, and now spans building
           full-stack AI-powered applications and representing Google Gemini on campus.
@@ -1537,12 +1575,36 @@
     resizeCanvas(); initStars(); requestAnimationFrame(drawStars);
     window.addEventListener('resize', () => { resizeCanvas(); initStars(); });
 
-    /* ── past-hero class for star canvas fade-in ── */
+    /* ── past-hero class for star canvas + photo continuation fade-in ── */
     const heroEl = document.getElementById('hero');
     const scrollWatcher = new IntersectionObserver(([e]) => {
       document.body.classList.toggle('past-hero', !e.isIntersecting);
+      if (e.isIntersecting) {
+        // Back on hero — clear atmosphere
+        document.body.className = document.body.className.replace(/\batm-\S+/g, '').trim();
+      }
     }, { threshold: 0.1 });
     scrollWatcher.observe(heroEl);
+
+    /* ── Per-section atmosphere swap ── */
+    const atmMap = {
+      about:        'atm-about',
+      skills:       'atm-skills',
+      experience:   'atm-experience',
+      projects:     'atm-projects',
+      achievements: 'atm-achievements',
+      contact:      'atm-contact',
+    };
+    const atmObs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting && atmMap[e.target.id]) {
+          // Remove all atm- classes then add new one
+          document.body.className = document.body.className.replace(/\batm-\S+/g, '').trim();
+          document.body.classList.add(atmMap[e.target.id]);
+        }
+      });
+    }, { rootMargin: '-30% 0px -50% 0px' });
+    document.querySelectorAll('section[id]').forEach(s => atmObs.observe(s));
 
     /* ── Cursor glow ── */
     const glow = document.getElementById('cursorGlow');
