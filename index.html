@@ -512,9 +512,32 @@
 
     /* ─── Hero responsive ─── */
     @media (max-width: 640px) {
-      .hero-inner { padding: 100px 24px 80px; }
+      /* Shift photo right so face is centre-visible on portrait */
+      .hero-scene__photo { background-position: 72% top; }
+      /* Content anchors to bottom — face shows above text */
+      .hero-inner {
+        padding: 76px 22px 96px;
+        max-width: 100%;
+        justify-content: flex-end;
+        min-height: 100svh;
+      }
+      .hero-name { font-size: clamp(2.4rem, 11vw, 3.2rem); line-height: 1.0; margin-bottom: 14px; }
+      .hero-role { font-size: 0.9rem; margin-bottom: 20px; max-width: 100%; }
+      /* Stat pills — prevent word wrap with nowrap labels */
+      .hero-stats { gap: 8px; margin-bottom: 20px; }
+      .h-stat { padding: 8px 14px; gap: 8px; }
+      .h-stat .s-num { font-size: 1rem; }
+      .h-stat .s-lbl { font-size: 0.62rem; white-space: nowrap; line-height: 1.2; }
+      /* Tags */
+      .hero-tags { gap: 6px; margin-bottom: 22px; }
+      .tag { font-size: 0.66rem; padding: 4px 11px; }
+      /* Buttons — side by side */
+      .hero-cta { flex-direction: row; gap: 10px; }
+      .hero-cta .btn-primary,
+      .hero-cta .btn-ghost { flex: 1; text-align: center; padding: 12px 10px; font-size: 0.72rem; }
       .hero-glass-card { display: none; }
-      .scroll-hint { left: 24px; }
+      .scroll-hint { left: 22px; bottom: 20px; }
+      .hero-chapter { font-size: 0.60rem; letter-spacing: 0.18em; margin-bottom: 16px; }
     }
 
     /* ═══════════════════════════════════════════════════════
@@ -912,18 +935,51 @@
       .projects-grid { grid-template-columns: 1fr; }
       .achieve-grid { grid-template-columns: 1fr 1fr; }
       .contact-inner { grid-template-columns: 1fr; }
-      .topnav { display: none; }
-      .topnav.open { display: flex; flex-direction: column; top: 10px; padding: 14px; border-radius: 16px; }
-      .mob-nav-btn { display: flex; position: fixed; top: 16px; right: 16px; z-index: 300; width: 44px; height: 44px; align-items: center; justify-content: center; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 10px; backdrop-filter: var(--blur); font-size: 1.1rem; }
+      /* Hide pill nav, show mobile button */
+      .topnav {
+        display: none;
+        top: 10px;
+        left: 10px;
+        right: 10px;
+        transform: none;
+        width: auto;
+        border-radius: 16px;
+        flex-direction: column;
+        align-items: stretch;
+        padding: 16px 14px 14px;
+        gap: 4px;
+      }
+      .topnav.open { display: flex; }
+      .nav-logo { border-right: none; border-bottom: 1px solid var(--glass-border); padding-bottom: 10px; margin-bottom: 4px; margin-right: 0; padding-right: 0; }
+      .nav-link { padding: 10px 14px; border-radius: 10px; font-size: 0.80rem; text-align: left; }
+      .mob-nav-btn {
+        display: flex;
+        position: fixed;
+        top: 14px; right: 14px;
+        z-index: 300;
+        width: 42px; height: 42px;
+        align-items: center; justify-content: center;
+        background: rgba(8,10,20,0.80);
+        border: 1px solid var(--glass-border);
+        border-radius: 10px;
+        backdrop-filter: var(--blur);
+        -webkit-backdrop-filter: var(--blur);
+        font-size: 1rem;
+        color: var(--white-60);
+        box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+      }
     }
     @media (min-width: 901px) {
       .mob-nav-btn { display: none; }
     }
     @media (max-width: 600px) {
-      section:not(#hero) { padding: 100px 20px 60px; }
+      section:not(#hero) { padding: 80px 20px 60px; }
       .skills-grid { grid-template-columns: 1fr; }
       .achieve-grid { grid-template-columns: 1fr; }
-      footer { padding: 24px 20px; }
+      .about-highlights { grid-template-columns: 1fr 1fr; }
+      footer { padding: 24px 20px; flex-direction: column; align-items: flex-start; gap: 6px; }
+      .chapter-divider { padding: 0 20px; }
+      .chapter-divider .ch-label { font-size: 0.58rem; letter-spacing: 0.15em; }
     }
   </style>
 </head>
@@ -979,19 +1035,18 @@
           breaking into cybersecurity, and crafting experiences that matter.
         </p>
 
-        <!-- Stat pills -->
         <div class="hero-stats">
           <div class="h-stat">
             <span class="s-num">8.0</span>
-            <span class="s-lbl">CGPA<br>/ 10.0</span>
+            <span class="s-lbl">CGPA / 10.0</span>
           </div>
           <div class="h-stat">
             <span class="s-num">3</span>
-            <span class="s-lbl">Intern-<br>ships</span>
+            <span class="s-lbl">Internships</span>
           </div>
           <div class="h-stat">
             <span class="s-num">2</span>
-            <span class="s-lbl">AI<br>Projects</span>
+            <span class="s-lbl">AI Projects</span>
           </div>
         </div>
 
